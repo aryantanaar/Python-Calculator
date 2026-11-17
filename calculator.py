@@ -26,9 +26,30 @@ operations = {
     "/": divide,
 }
 
+#Calculator Memory
+memory = 0
+history = []
 
+def memory_add(value):
+    global memory
+    memory += value
+    return memory
+
+def memory_subtract(value):
+    global memory
+    memory -= value
+    return memory
+
+def memory_recall():
+    return memory
+
+def memory_clear():
+    global memory
+    memory = 0
+    return memory
 
 def calculator():
+    global memory
     print(art.logo)
     should_accumulate = True
 
@@ -43,7 +64,48 @@ def calculator():
     while should_accumulate:
         for symbol in operations:
             print(symbol)
+
+        print("M+ : Add current number to memory")
+        print("M- : Subtract current number from memory")
+        print("MR : Recall memory")
+        print("MC : Clear memory")
+        print("H : View calculation history")
+        print("CH : Clear calculation history")
         operation_symbol = input("Pick an operation: ")
+
+        if operation_symbol == "M+":
+            memory_add(num1)
+            print("Memory:", memory)
+            continue
+
+        elif operation_symbol == "M-":
+            memory_subtract(num1)
+            print("Memory:", memory)
+            continue
+
+        elif operation_symbol == "MR":
+            num1 = memory_recall()
+            print("Memory recalled:", num1)
+            continue
+
+        elif operation_symbol == "MC":
+            memory_clear()
+            print("Memory cleared")
+            continue
+
+        elif operation_symbol == "H":
+            if history:
+                print("\nCalculation History:")
+                for calculation in history:
+                    print(calculation)
+            else:
+                print("No calculation history available.")
+            continue
+
+        elif operation_symbol == "CH":
+            history.clear()
+            print("Calculation history cleared ")
+            continue
 
         if operation_symbol not in operations:
             print("Invalid input, please enter a valid operation")
@@ -55,6 +117,9 @@ def calculator():
             continue
         answer = operations[operation_symbol](num1, num2)
         print(f"{num1} {operation_symbol} {num2} = {answer}")
+
+        if isinstance(answer, (int, float)):
+            history.append(f"{num1} {operation_symbol} {num2} = {answer}")
 
         choice = input(f"Type 'y' to continue calculating with {answer}, or type 'n' to start a new calculation, or 'q' to quit: ").lower()
 
